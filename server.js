@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import Notiflix from 'notiflix';
-// import appointmentRoutes from './routes/appointmentRoutes.js';
-import registerRoutes from './routes/registerRoutes.js'
+import authRoutes from './routes/authRoute.js';
+
 
 dotenv.config();
 const app = express();
@@ -12,12 +12,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// app.use('/api/appointments', appointmentRoutes);
-app.use('/api/register', registerRoutes);
+app.use('/api', authRoutes);
 
-mongoose.connect(process.env.MONGO_URI, {
+// mongoose.connect(process.env.MONGO_URI, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// })
+mongoose.connect("mongodb+srv://arish:123%40Marish@cluster1.dqxk3cq.mongodb.net/inklens-db?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  dbName: "inklens-db" // 👈 Specific to your project
 })
 .then(() => {
   console.log('✅ MongoDB connected successfully!');
