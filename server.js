@@ -9,7 +9,11 @@ import authRoutes from './routes/authRoute.js';
 dotenv.config();
 const app = express();
 
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173", // or your frontend URL
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/api', authRoutes);
@@ -18,7 +22,7 @@ app.use('/api', authRoutes);
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true,
 // })
-mongoose.connect("mongodb+srv://arish:123%40Marish@cluster1.dqxk3cq.mongodb.net/inklens-db?retryWrites=true&w=majority", {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   dbName: "inklens-db" // 👈 Specific to your project

@@ -27,10 +27,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    isDeleted: {
-      type: Boolean,
-      default: false, // For soft delete
-    },
+    // isDeleted: {
+    //   type: Boolean,
+    //   default: false, // For soft delete
+    // },
   },
   { timestamps: true }
 );
