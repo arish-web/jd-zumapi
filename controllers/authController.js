@@ -62,13 +62,17 @@ export const loginUser = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    console.log("req token", token);
-
-    return res.status(200).json({
+     return   res.status(200).json({
       message: "Login successful",
-      token, // ✅ this was missing
+      token,
+      user: {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        company: user.company
+      },
     });
-      console.log("123Arish",   token)
   } catch (error) {
     console.error("Login error:", error.message);
     res.status(500).json({ message: "Internal server error" });

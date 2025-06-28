@@ -4,6 +4,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import Notiflix from 'notiflix';
 import authRoutes from './routes/authRoute.js';
+import tattooRoutes from './routes/tattooRoute.js';
+import photoRoutes from "./routes/photoRoute.js";
+import appointmentRoute from "./routes/appointmentRoute.js";
 
 
 dotenv.config();
@@ -16,7 +19,13 @@ app.use(cors({
 }));
 app.use(express.json());
 
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
 app.use('/api', authRoutes);
+app.use('/api', tattooRoutes);
+app.use("/api", photoRoutes);
+app.use("/api", appointmentRoute);
 
 // mongoose.connect(process.env.MONGO_URI, {
 //   useNewUrlParser: true,
