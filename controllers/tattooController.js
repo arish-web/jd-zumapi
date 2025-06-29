@@ -2,7 +2,7 @@ import Tattoo from "../models/TattooModel.js";
 
 export const addTattoo = async (req, res) => {
   try {
-    const { title, description, style, size, date, price, uniqueCode, image, id } =
+    const { title, description, style, category, date, price, uniqueCode, image, id } =
       req.body;
 
     const tattoo = new Tattoo({
@@ -10,7 +10,7 @@ export const addTattoo = async (req, res) => {
       description: req.body.description,
       artist: req.body.artist,
       style: req.body.style,
-      size: req.body.size,
+      category: req.body.category,
       date: req.body.date,
       price: req.body.price,
       uniqueCode: req.body.uniqueCode,
