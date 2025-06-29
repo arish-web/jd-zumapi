@@ -3,71 +3,6 @@ import Photo from "../models/PhotoModel.js";
 import Tattoo from "../models/TattooModel.js";
 import User from "../models/authModel.js";
 
-// export const createAppointment = async (req, res) => {
-//   try {
-//     const { serviceId, serviceType, date, time } = req.body;
-//     const userId = req.user.id;
-
-//     let ownerId;
-
-//     if (serviceType === "tattoo") {
-//       const tattoo = await Tattoo.findById(serviceId);
-//       if (!tattoo) {
-//         return res.status(404).json({ message: "Tattoo service not found" });
-//       }
-//       ownerId = tattoo.ownerId;
-//     }
-
-//     // if (serviceType === "photo") {
-//     //   const photo = await Photo.findById(serviceId);
-//     //   if (!photo) {
-//     //     return res.status(404).json({ message: "Photo service not found" });
-//     //   }
-//     //   ownerId = photo.ownerId;
-//     // }
-//     if (serviceType === "photo") {
-//       let photo;
-
-//       if (typeof serviceId === "object" && serviceId.title) {
-//         // Search by title or any other field in the object
-//         photo = await Photo.findOne({ title: serviceId.title });
-//       } else {
-//         // Search by ObjectId string
-//         photo = await Photo.findById(serviceId);
-//       }
-
-//       if (!photo) {
-//         return res.status(404).json({ message: "Photo service not found" });
-//       }
-
-//       ownerId = photo.ownerId;
-//     }
-
-//     const appointment = new Appointment({
-//       userId,
-//       serviceId,
-//       serviceType,
-//       date,
-//       time,
-//       ownerId, // ✅ now correctly derived
-//       status: "pending",
-//     });
-
-//     const saved = await appointment.save();
-//     res.status(201).json(saved);
-//   } catch (err) {
-//     console.error("Failed to create appointment:", err);
-//     res
-//       .status(500)
-//       .json({ error: "Failed to create appointment", details: err });
-//   }
-// };
-
-// Get All
-
-
-
-
 export const createAppointment = async (req, res) => {
   try {
     const { serviceId, serviceType, date, time } = req.body;
@@ -77,9 +12,10 @@ export const createAppointment = async (req, res) => {
     let actualServiceId; // Store the ObjectId here
 
     if (serviceType === "tattoo") {
-      const tattoo = typeof serviceId === "object"
-        ? await Tattoo.findOne(serviceId)
-        : await Tattoo.findById(serviceId);
+      const tattoo =
+        typeof serviceId === "object"
+          ? await Tattoo.findOne(serviceId)
+          : await Tattoo.findById(serviceId);
 
       if (!tattoo) {
         return res.status(404).json({ message: "Tattoo service not found" });
@@ -90,9 +26,10 @@ export const createAppointment = async (req, res) => {
     }
 
     if (serviceType === "photo") {
-      const photo = typeof serviceId === "object"
-        ? await Photo.findOne(serviceId)
-        : await Photo.findById(serviceId);
+      const photo =
+        typeof serviceId === "object"
+          ? await Photo.findOne(serviceId)
+          : await Photo.findById(serviceId);
 
       if (!photo) {
         return res.status(404).json({ message: "Photo service not found" });
@@ -116,15 +53,44 @@ export const createAppointment = async (req, res) => {
     res.status(201).json(saved);
   } catch (err) {
     console.error("Failed to create appointment:", err);
-    res.status(500).json({ error: "Failed to create appointment", details: err });
+    res
+      .status(500)
+      .json({ error: "Failed to create appointment", details: err });
   }
 };
 
+export const updateAppointment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
 
+    // Optional: validate allowed statuses
+    const allowedStatuses = ["pending", "confirmed", "cancelled", "accepted"];
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    console.log("updatedAppointment", updatedAppointment);
+
+    res.json(updatedAppointment);
+  } catch (err) {
+    console.error("Error updating appointment status:", err);
+    res.status(500).json({ message: "Failed to update status" });
+  }
+};
 
 export const getAppointmentsForUser = async (req, res) => {
   const { userId } = req.query;
-
 
   if (!userId) {
     return res.status(400).json({ message: "User ID is required" });
