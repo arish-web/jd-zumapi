@@ -20,9 +20,10 @@ const PORT = process.env.PORT || 5000;
 //   credentials: true
 // }));
 app.use(cors({
-  origin: "https://jd-zum.vercel.app", // or your frontend URL
+  origin: 'https://jd-zum.vercel.app',
   credentials: true
 }));
+
 app.use(express.json());
 
 app.use(express.json({ limit: '10mb' }));
