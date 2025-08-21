@@ -4,10 +4,10 @@ import jwt from "jsonwebtoken";
 import sendEmail from "../utils/sendEmail.js";
 
 export const registerUser = async (req, res) => {
-  const { name, email, password, role, company } = req.body;
+  const { name, email, password, role, company, phone } = req.body;
 
   // Validate required fields
-  if (!name || !email || !password || !role) {
+  if (!name || !email || !password || !role || !phone) {
     return res.status(400).json({ msg: "Please fill in all fields" });
   }
 
@@ -27,12 +27,28 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      phone,
       company: company || "", // default to empty string if not provided
     });
 
     await newUser.save();
 
-    return res.status(201).json({ message: "User registered successfully" });
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    return res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user: {
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        phone: newUser.phone,
+        company: newUser.company,
+      },
+    });
   } catch (error) {
     console.error("Registration error:", error.message);
     res.status(500).json({ message: "Internal server error" });

@@ -71,33 +71,6 @@ export const markAppointmentAsPaid = async (req, res) => {
   }
 };
 
-// export const markAppointmentAsPaid = async (req, res) => {
-//   try {
-//     const user = req.user;
-
-//     if (user.role !== "admin" && user.role !== "owner") {
-//       return res.status(403).json({ message: "Forbidden" });
-//     }
-
-//     const appointmentId = req.params.id;
-
-//     const updated = await Appointment.findByIdAndUpdate(
-//       appointmentId,
-//       { paymentStatus: "Paid" },
-//       { new: true }
-//     );
-
-//     if (!updated) {
-//       return res.status(404).json({ message: "Appointment not found" });
-//     }
-
-//     res.status(200).json({ message: "Payment status updated", data: updated });
-//   } catch (error) {
-//     console.error("Error marking as paid:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
-
 export const updateAppointment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -165,7 +138,7 @@ export const getAppointmentsForServiceOwner = async (req, res) => {
     const appointments = await Appointment.find({
       serviceId: { $in: serviceIds },
     })
-      .populate("userId", "name email") // or clientId if that’s your schema
+      .populate("userId", "name email phone") // or clientId if that’s your schema
       .populate("serviceId", "title category");
 
     res.status(200).json(appointments);
