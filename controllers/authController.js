@@ -4,10 +4,10 @@ import jwt from "jsonwebtoken";
 import sendEmail from "../utils/sendEmail.js";
 
 export const registerUser = async (req, res) => {
-  const { name, email, password, role, company, phone } = req.body;
+  const { name, email, password, role, company } = req.body;
 
   // Validate required fields
-  if (!name || !email || !password || !role || !phone) {
+  if (!name || !email || !password || !role) {
     return res.status(400).json({ msg: "Please fill in all fields" });
   }
 
@@ -27,7 +27,6 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      phone,
       company: company || "", // default to empty string if not provided
     });
 
@@ -45,7 +44,6 @@ export const registerUser = async (req, res) => {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
-        phone: newUser.phone,
         company: newUser.company,
       },
     });
